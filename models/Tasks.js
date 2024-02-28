@@ -1,5 +1,20 @@
 import mongoose from "mongoose";
 
+
+const checklistItem = new mongoose.Schema(
+{
+  description: {
+    type: String,
+    required: true,
+    max: 100,
+  },
+  isChecked: {
+    type: Boolean,
+    required: true,
+    default:false,
+  }
+});
+
 const TaskSchema = new mongoose.Schema(
   {
     userId: {
@@ -17,7 +32,7 @@ const TaskSchema = new mongoose.Schema(
       required: true,
     },
     checklist: {
-      type: Array,
+      type: [checklistItem],
       required: true,
       default: [],
     },
@@ -37,7 +52,7 @@ const TaskSchema = new mongoose.Schema(
     shareId: {
       type: String,
       default: null,
-  },
+    },
   },
   { timestamps: true }
 );

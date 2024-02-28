@@ -53,6 +53,7 @@ export const deleteTask = async (req, res) => {
 export const editTask = async (req, res) => {
     try { 
         console.log("edit task");
+        console.log(req.body);
         const filter = { _id: req.body._id };
         delete req.body._id;
 
