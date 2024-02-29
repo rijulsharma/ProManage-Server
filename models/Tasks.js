@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 
-const checklistItem = new mongoose.Schema(
+const checklistSchema = new mongoose.Schema(
 {
   description: {
     type: String,
@@ -32,7 +32,7 @@ const TaskSchema = new mongoose.Schema(
       required: true,
     },
     checklist: {
-      type: [checklistItem],
+      type: [checklistSchema],
       required: true,
       default: [],
     },

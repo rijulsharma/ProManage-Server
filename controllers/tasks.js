@@ -34,6 +34,7 @@ export const createTask = async (req, res) => {
       const savedTask = await newTask.save();
       res.status(201).json(savedTask);
     } catch (err) {
+      console.log(err.message);
       res.status(500).json({ error: err.message });
     }
 };
@@ -43,7 +44,12 @@ export const deleteTask = async (req, res) => {
         console.log("delete task");
         let {_id} = req.body;
         const deletedTask = await Tasks.deleteOne({ _id : _id } );
-        res.status(201).json(deletedTask);
+        if(deleteTask.deletedCount === 0){
+          res.status(404).json({ msg: "Object not found"});
+        }else {
+          res.status(201).json(deletedTask);
+        }
+        
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
@@ -60,6 +66,7 @@ export const editTask = async (req, res) => {
         const editedTask = await Tasks.findOneAndUpdate(filter, req.body, { new: true });
         res.status(201).json(editedTask);
     } catch (err) {
+        console.log(err.message);
         res.status(500).json({ error: err.message });
     }
 };

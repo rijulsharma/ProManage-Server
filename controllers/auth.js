@@ -1,19 +1,22 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import Users from "../models/Users.js";
+import { response } from "express";
 
 /* REGISTER USER */
 export const register = async (req, res) => {
   try {
-    console.log("register new user");
     console.log(req.body);
     const {
       name,
       email,
       password,
     } = req.body;
-
-
+    
+    let isExist = await Users.findOne({ email: email });
+    if( isExist != null){
+      return res.status(400).json({ msg: 'Email is already registered' });
+    }
     const salt = await bcrypt.genSalt();
     const passwordHash = await bcrypt.hash(password, salt);
 
@@ -31,18 +34,14 @@ export const register = async (req, res) => {
 
 /* LOGGING IN */
 export const login = async (req, res) => {
-  console.log("logging in");
   console.log(req.body);
   try {
     const { email, password } = req.body;
-
-
     let user = await Users.findOne({ email: email });
-    console.log(user._id);
-    if (!user) return res.status(400).json({ msg: "User does not exist. " });
+    if (!user) return res.status(400).json({ msg: "User does not exist" });
 
     let isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(401).json({ msg: "Invalid credentials. " });
+    if (!isMatch) return res.status(401).json({ msg: "Invalid credentials" });
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
     delete user.password;

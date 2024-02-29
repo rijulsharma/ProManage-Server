@@ -11,7 +11,7 @@ export const getSharedTask = async (req, res) => {
         const requestedTasks = await Tasks.find({ shareId: shareId});
         if(requestedTasks.length === 0 )
         {
-            throw new Error('could not find user');
+            res.status(404).json({ error: "Not Found" });
         }
         console.log(requestedTasks);
         res.status(201).json(requestedTasks);

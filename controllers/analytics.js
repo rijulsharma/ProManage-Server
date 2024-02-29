@@ -23,7 +23,10 @@ export const getAnalytics = async (req, res) => {
 
         for( let obj of allTasks )
         {
-            if(obj.priority === "LOW PRIORITY"){
+            if(obj.section === "Done"){
+
+            }
+            else if(obj.priority === "LOW PRIORITY"){
                 LowPriorityTasks++;
             }else if(obj.priority === "MODERATE PRIORITY"){
                 MediumPriorityTasks++;
@@ -53,9 +56,8 @@ export const getAnalytics = async (req, res) => {
             HighPriorityTasks,
             DueDateTasks
         }
-        console.log(analytics);
         res.status(201).json(analytics);
     } catch (err) {
-        res.status(500).json({  });
+        res.status(500).json({ error: err.message });
     }
 };

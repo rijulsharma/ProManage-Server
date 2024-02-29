@@ -7,30 +7,19 @@ import bcrypt from "bcrypt";
 
 
 export const updateProfile = async (req, res) => {
-    try {
-        // const filter = { _id: req.body._id };
-        // delete req.body._id;
-        // // const updatedUser = await Users.findOneAndUpdate( { name : "aryan" } , {name : "power"}, { new: true });
-        // console.log(updatedUser);
-        // res.status(201).json({ "u":"d"});
-        
-        console.log(req.body);
+    try {        
         let {
             name,
             oldPassword,
             newPassword,
         } = req.body;
         const filter = { _id: req.body._id };
-        console.log("update profile api calleed !!");
-        console.log(newPassword);
-
         if(newPassword == ''){
             console.log("change name");
-            // console.log(_id);
             console.log(name);
             delete req.body._id;
             const updatedUser = await Users.findOneAndUpdate(filter , req.body , { new: true });
-            res.status(201).json(updatedUser);
+            res.status(201).json({msg: "Name updated successfully"});
         }
         else
         {
@@ -48,14 +37,13 @@ export const updateProfile = async (req, res) => {
                     "password" : passwordHash,
                     ...(( name == '') ? {"name" : name } : {})
                 },{ new: true });
-                res.status(201).json(updatedUser);
+                res.status(201).json({msg: (name == '') ? 'Password updated successfully' : "Details updated successfully"});
             }
             else{
                 console.log("not matched");
-                res.status(500).json({ error: "incorrect password entered" });
+                res.status(401).json({ error: "Old Password is incorrect" });
             }
-        }
-      
+        }    
     } catch (err) {
         console.log(err);
         res.status(500).json({ error: err.message });
