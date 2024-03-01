@@ -34,7 +34,12 @@ const TaskSchema = new mongoose.Schema(
     checklist: {
       type: [checklistSchema],
       required: true,
-      default: [],
+      validate: {
+        validator: function(v) {
+          return Array.isArray(v) && v.length > 0;
+        },
+        message: 'Checklist should not be empty'
+      }
     },
     isDue: {
       type: Boolean,

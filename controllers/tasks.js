@@ -19,6 +19,7 @@ export const createTask = async (req, res) => {
       if(isDue){
         dueDate = req.body.dueDate;
       }
+
       const newTask = new Tasks({
         userId,
         title,
@@ -56,7 +57,9 @@ export const editTask = async (req, res) => {
     try { 
         const filter = { _id: req.body._id };
         delete req.body._id;
-
+        if( typeof req.body.checklist !== 'undefined' && req.body.checklist.length === 0 ){
+          return res.status(401).json({ error: "Checklist cannot be empty" });
+        }
         const editedTask = await Tasks.findOneAndUpdate(filter, req.body, { new: true });
         res.status(201).json(editedTask);
     } catch (err) {
