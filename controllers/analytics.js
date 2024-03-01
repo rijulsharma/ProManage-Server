@@ -5,12 +5,9 @@ import Tasks from "../models/Tasks.js";
 /* REGISTER USER */
 export const getAnalytics = async (req, res) => {
     try {
-        console.log("analytics api  hit ");
         const { id } = req.params;
-        console.log(id);
 
         const allTasks = await Tasks.find({ userId: id});
-
         let BacklogTasks = 0;
         let ToDoTasks = 0;
         let InProgressTasks = 0;
@@ -19,7 +16,6 @@ export const getAnalytics = async (req, res) => {
         let MediumPriorityTasks = 0;
         let HighPriorityTasks = 0;
         let DueDateTasks = 0;
-        console.log(allTasks);
 
         for( let obj of allTasks )
         {

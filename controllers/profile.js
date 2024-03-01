@@ -3,9 +3,6 @@ import Tasks from "../models/Tasks.js";
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 
-
-
-
 export const updateProfile = async (req, res) => {
     try {        
         let {
@@ -15,37 +12,40 @@ export const updateProfile = async (req, res) => {
         } = req.body;
         const filter = { _id: req.body._id };
         if(newPassword == ''){
-            console.log("change name");
-            console.log(name);
             delete req.body._id;
-            const updatedUser = await Users.findOneAndUpdate(filter , req.body , { new: true });
-            res.status(201).json({msg: "Name updated successfully"});
+            let updatedUser = await Users.findOneAndUpdate(filter , req.body , { new: true });
+            var updatedUserObj = updatedUser.toObject();
+            delete updatedUserObj.password;
+            
+            res.status(201).json({
+                user: updatedUserObj,
+                msg: "Name updated successfully"
+            });
         }
         else
         {
-            console.log("change pass");
             const user = await Users.findById(req.body._id);
-            console.log(user);
-            console.log(oldPassword);
             const isMatch = await bcrypt.compare(oldPassword, user.password);
             if(isMatch)
             {
-                console.log("matched");
                 const salt = await bcrypt.genSalt();
                 const passwordHash = await bcrypt.hash(newPassword, salt);
-                const updatedUser = await Users.findOneAndUpdate( filter , {
+                let updatedUser = await Users.findOneAndUpdate( filter , {
                     "password" : passwordHash,
                     ...(( name == '') ? {"name" : name } : {})
                 },{ new: true });
-                res.status(201).json({msg: (name == '') ? 'Password updated successfully' : "Details updated successfully"});
+                var updatedUserObj = updatedUser.toObject();
+                delete updatedUserObj.password;
+                res.status(201).json({
+                    user: updatedUserObj,
+                    msg: (name == '') ? 'Password updated successfully' : "Details updated successfully"
+                });
             }
             else{
-                console.log("not matched");
-                res.status(401).json({ error: "Old Password is incorrect" });
+                res.status(401).json({error: "Old Password is incorrect" });
             }
         }    
     } catch (err) {
-        console.log(err);
         res.status(500).json({ error: err.message });
     }
 };

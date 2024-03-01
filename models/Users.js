@@ -18,10 +18,6 @@ const UserSchema = new mongoose.Schema(
       required: true,
       min: 6,
     },
-    tasks: {
-      type: Array,
-      default: [],
-    },
   },
   { timestamps: true }
 );
